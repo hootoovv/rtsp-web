@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    title="视频播放器"
+    :title="$t('message.player.hls')"
     v-model="showPlayer"
     fullscreen
     :before-close="onCloseVideoPlay"
     @opened="createPlayer"
-  >
+    >
     <div id="player" class="video">
     </div>
   </el-dialog>
@@ -15,9 +15,10 @@
 import "video.js/dist/video-js.css";
 import video_zhCN from "video.js/dist/lang/zh-CN.json";
 import videoJS from "video.js";
+import { ElLoadingService } from 'element-plus';
 
 export default {
-  name: "VideoPlayer",
+  name: "HlsPlayer",
   props: {
     url: {
       type: String,
@@ -98,5 +99,10 @@ export default {
 </script>
 
 <style>
+.video {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+}
 </style>
 

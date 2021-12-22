@@ -1,6 +1,6 @@
 <template>
   <el-main>
-    <el-table :data="channels" style="width: 100%;" :row-class-name="tableRowClassName">
+    <el-table :data="rooms" style="width: 100%;" :row-class-name="tableRowClassName">
       <el-table-column prop="state" :label="$t('message.table.state')" sortable width="100">
         <template #default="scope">
           <el-tag
@@ -13,10 +13,10 @@
       <el-table-column prop="startTime" :label="$t('message.table.start_time')" sortable width="240"></el-table-column>
       <el-table-column prop="id" :label="$t('message.table.id')" sortable></el-table-column>
       <el-table-column prop="url" :label="$t('message.table.rtsp')" sortable></el-table-column>
-      <el-table-column prop="hls" :label="$t('message.table.hls')" width="120" align="center">
+      <el-table-column :label="$t('message.table.hls')" width="120" align="center">
         <template #default="scope">
           <template v-if="scope.row.state === 'ready'">
-            <el-button type="text" @click="playVideo(scope.row.id, scope.row.hls)">{{$t('message.button.watch')}}</el-button>
+            <el-button type="text" @click="playVideo(scope.row.id)">{{$t('message.button.watch')}}</el-button>
           </template>
           <template v-else>
             <span>{{$t('message.table.starting')}}"</span>
@@ -24,50 +24,46 @@
         </template>
       </el-table-column>
     </el-table>
-    <video-player :url="hlsUrl" :show="play" @close="onClosePlayer" @error="onPlayerError">
-    </video-player>
+    <rtc-player :room="id" :visible="play" @close="onClosePlayer" @error="onPlayerError">
+    </rtc-player>
   </el-main>
 </template>
 
 <script>
-import VideoPlayer from './VideoPlayer.vue';
+import RtcPlayer from './RtcPlayer.vue';
 
 export default {
-  name: "Status",
+  name: "RtcStatus",
   components: {
-    VideoPlayer
+    RtcPlayer
   },
   data() {
     return {
-      channels: [],
+      rooms: [],
       baseUrl: this.$http.defaults.baseURL,
       timer: 0,
       play: false,
-      hlsUrl: '',
       id: ''
     };
   },
   mounted() {
-    this.fetcChannels();
+    this.fetcRooms();
   },
   beforeUnmount() {
     clearTimeout(this.timer);
   },
   methods: {
-    fetcChannels() {
+    fetcRooms() {
       this.$http
-        .get(`/api/channels`)
+        .get(`/api/rooms`)
         .then((res) => {
-          this.channels = res.data;
-          this.timer = setTimeout(this.fetcChannels, 2000);
+          this.rooms = res.data;
+          this.timer = setTimeout(this.fetcRooms, 2000);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           this.$message.error(this.$t('error.get_channels'));
         });
-    },
-    goStart() {
-      this.$router.push(`/`);
     },
     tableRowClassName({ row }) {
       if (row.state === 'ready') {
@@ -75,9 +71,8 @@ export default {
       }
       return 'warning-row';
     },
-    playVideo (id, url) {
+    playVideo (id) {
       this.id = id;
-      this.hlsUrl = this.getBaseUrl() + url;
       this.play = true;
 
       // stop fetch channels while playing
@@ -85,10 +80,11 @@ export default {
     },
     onClosePlayer() {
       // resume fetch channels when stop playing
-      this.timer = setTimeout(this.fetcChannels, 50);
+      this.timer = setTimeout(this.fetcRooms, 50);
+      this.play = false;
     },
     onPlayerError() {
-      this.timer = setTimeout(this.fetcChannels, 50);
+      this.timer = setTimeout(this.fetcRooms, 50);
       this.play = false;
       this.$message.error(this.$t('error.channel_closed'));
     }

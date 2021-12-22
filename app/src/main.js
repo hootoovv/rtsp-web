@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+import https from 'https'
 import VueAxios from 'vue-axios'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -14,7 +15,7 @@ function getBaseUrl() {
   url = url.substring(0, url.lastIndexOf('/'));
 
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8080';
+    url = 'https://dev.zktr.com:8443';
   }
 
   return url;
@@ -30,6 +31,12 @@ function start() {
   app.use(VueAxios, axios);
   axios.defaults.baseURL = getBaseUrl();
   axios.defaults.timeout = 10000;
+
+  if (process.env.NODE_ENV === "development") {
+    axios.httpsAgent = new https.Agent({  
+      rejectUnauthorized: false
+    });
+  }
 
   axios.interceptors.response.use(response => {
     const res = response.data;

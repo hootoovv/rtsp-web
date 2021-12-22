@@ -1,30 +1,10 @@
   mediaserver:
     listenPort: 8080
+    listenSslPort: 8443
     apiUrl: /api
 
     # ffmpeg binary path
-    ffmpegPath: d:/tools/ffmpeg.exe
-
-    # ffmpeg command line parameters before -i
-    ffmpegParams1:
-      - -fflags
-      - +genpts
-
-    # ffmpeg command line paramsters after -i rtsp://xxxx, force tcp to connect rtsp, copy a/v stream, can also try resize and transcode, hls segment: 5s, 5 ts files in m3u8, keep last 10 ts files.
-    ffmpegParams2:
-      - -rtsp_transport
-      - tcp
-      - -c
-      - copy
-      - -f
-      - hls
-      - -hls_time
-      - 5.0
-      - -hls_list_size
-      - 5
-      - -hls_wrap
-      - 10
-      - -y
+    ffmpegPath: /usr/bin/ffmpeg
 
     # server side basepath for hls channels, must be full path format without tailing '/'
     # this folder will provide full web access, so be careful. better leave it empty
@@ -37,8 +17,38 @@
     # channel idle timeout, unit in seconds
     channelTimeout: 30
 
+    # room consumer idle timeout, unit in seconds
+    consumerTimeout: 5
+
     # CORS accept, default should not provide this parameter
     cors: "*"
 
     # Trace all API access
     trace: true
+
+    tls:
+      sslCrt: ./certs/fullchain.pem
+      sslKey: ./certs/privkey.pem
+
+    hls:
+      # ffmpeg command line parameters before -i
+      ffmpegParams1:
+        - -fflags
+        - +genpts
+
+      # ffmpeg command line paramsters after -i rtsp://xxxx, force tcp to connect rtsp, copy a/v stream, can also try resize and transcode, hls segment: 5s, 5 ts files in m3u8, keep last 10 ts files.
+      ffmpegParams2:
+        - -rtsp_transport
+        - tcp
+        - -c
+        - copy
+        - -f
+        - hls
+        - -hls_time
+        - 5.0
+        - -hls_list_size
+        - 5
+        - -hls_wrap
+        - 10
+        - -y
+

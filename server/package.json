@@ -20,9 +20,10 @@
     "js-yaml": "^4.1.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
-    "koa2-cors": "^2.0.6",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
+    "koa2-cors": "^2.0.6",
+    "mediasoup": "^3.9.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

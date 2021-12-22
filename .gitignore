@@ -2,3 +2,5 @@ node_modules
 .vscode
 /app/dist
 /server/static
+
+*.pem

@@ -1,25 +1,30 @@
 <template>
   <el-main v-loading="loading" :element-loading-text="$t('message.loading')" element-loading-background="rgba(0, 0, 0, 0.6)" class="frame">
-    <el-card class="box-card">
-      <el-input v-model="rtspUrl" autofocus :placeholder="$t('message.input.placeholder')" @keyup.enter="onClickStart">
-        <template #prepend>rtsp://</template>
-      </el-input>
-      <div style="margin: 60px;"></div>
-      <div style="display: flex"><div style="align-self: flex-start; flex-grow: 1"></div>
-      <el-button type="primary" plain class="button" @click="onClickStart">{{$t('message.button.start')}}</el-button></div>
-    </el-card>
-    <video-player :url="hlsUrl" :show="ready" @close="onClosePlayer" @error="onPlayerError">
-    </video-player>
+    <div style="align-self: center;">
+      <el-card class="box-card">
+        <el-input v-model="rtspUrl" autofocus :placeholder="$t('message.input.placeholder')" @keyup.enter="onClickStart">
+          <template #prepend>rtsp://</template>
+        </el-input>
+        <div style="margin: 40px;"></div>
+        <div style="display: flex">
+          <div style="align-self: flex-start; flex-grow: 1"></div>
+          <el-button type="primary" plain class="button" @click="onClickStart">{{$t('message.button.start')}}</el-button>
+        </div>
+      </el-card>
+      <div style="margin: 180px;"></div>
+    </div>
+    <hls-player :url="hlsUrl" :show="ready" @close="onClosePlayer" @error="onPlayerError">
+    </hls-player>
   </el-main>
 </template>
 
 <script>
-import VideoPlayer from './VideoPlayer.vue';
+import HlsPlayer from './HlsPlayer.vue';
 
 export default {
-  name: "Camera",
+  name: "HlsCamera",
   components: {
-    VideoPlayer
+    HlsPlayer
   },
   data() {
     return {
@@ -37,7 +42,7 @@ export default {
   },
   methods: {
     startChannel() {
-      let data = { url: `rtsp://${this.rtspUrl}` };
+      const data = { url: `rtsp://${this.rtspUrl}` };
       this.$http
         .post("/api/channel", data)
         .then((res) => {
@@ -80,7 +85,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           this.ready = false;
           this.loading = false;
           this.channel = null;
@@ -113,7 +118,7 @@ export default {
           this.$message.error(this.$t('error.channel_closed'));
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           this.$message.error(this.$t('error.close_channel'));
         });
     },
@@ -136,9 +141,6 @@ export default {
     },
     onPlayerError() {
       this.stopPlayer();
-    },
-    goWatch() {
-      this.$router.push(`/Status`);
     }
   },
 };
@@ -146,18 +148,15 @@ export default {
 
 <style scoped>
 .frame {
-  margin: 0px auto;
-  padding: 0px;
-  width: 100%;
-  min-height: 800px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
 }
 .box-card {
-  margin-top: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 40px;
+  padding: 20px;
   width: 500px;
-  height: 180px;
+  height: 160px;
 }
 .button {
   align-self: flex-end

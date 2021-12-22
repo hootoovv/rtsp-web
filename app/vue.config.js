@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const fs = require('fs')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -31,20 +32,27 @@ module.exports = {
   productionSourceMap: false,
 
   devServer: {
+    // server: {
+    //   type: 'https',
+    //   options: {
+    //     key: fs.readFileSync(path.join(__dirname, './certs/privkey.pem')),
+    //     cert: fs.readFileSync(path.join(__dirname, './certs/fullchain.pem')),
+    //     passphrase: 'webpack-dev-server',
+    //     requestCert: true
+    //   }
+    // },
+    host: 'dev.zktr.com',
     port: port,
     open: true,
     overlay: {
       warnings: false,
       errors: true
     },
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.0:8080',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
+    https: {
+      key: fs.readFileSync(path.join(__dirname, './certs/privkey.pem')),
+      cert: fs.readFileSync(path.join(__dirname, './certs/fullchain.pem')),
+      passphrase: 'webpack-dev-server',
+      requestCert: false
     }
   },
 
@@ -56,7 +64,8 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    devtool: 'source-map'
   },
 
   chainWebpack(config) {

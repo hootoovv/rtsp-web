@@ -1,0 +1,38 @@
+{
+  "message": {
+    "header": {
+      "view": "IP摄像头预览",
+      "status": "频道列表"
+    },
+    "input": {
+      "placeholder": "IP摄像头的RTSP地址",
+      "validate": "请输入IP摄像头的RTSP地址。"
+    },
+    "button": {
+      "view": "启动频道",
+      "status": "频道监控",
+      "start": "启动观看",
+      "watch": "监看"
+    },
+    "table": {
+      "state": "状态",
+      "starting": "启动中",
+      "start_time": "启动时间",
+      "id": "频道",
+      "rtsp": "RTSP地址",
+      "hls": "HLS地址"
+    },
+    "player": {
+      "hls": "流视频播放器",
+      "rtc": "实时视频播放器"
+    },
+    "loading": "频道启动中，请稍候..."
+  },
+  "error": {
+    "create_channel": "创建频道失败。",
+    "channel_closed": "频道已关闭。",
+    "close_channel": "关闭频道出错。",
+    "get_channels": "获取频道数据失败。",
+    "browser_not_support": "浏览器不支持WebRTC功能。"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "message": {
+    "header": {
+      "view": "IP Camera Preview",
+      "status": "Channel List"
+    },
+    "input": {
+      "placeholder": "RTSP Address for IP Camera",
+      "validate": "Please input RTSP Address for IP Camera"
+    },
+    "button": {
+      "view": "View",
+      "status": "Status",
+      "start": "Start",
+      "watch": "Watch"
+    },
+    "table": {
+      "state": "Status",
+      "starting": "Starting",
+      "start_time": "Start Time",
+      "id": "Channel",
+      "rtsp": "RTSP Address",
+      "hls": "HLS Address"
+    },
+    "player": {
+      "hls": "Stream Video Player",
+      "rtc": "Realtime Video Player"
+    },
+    "loading": "Starting channel..."
+  },
+  "error": {
+    "create_channel": "Failed to create channel",
+    "channel_closed": "Channel closed",
+    "close_channel": "Failed to close channel",
+    "get_channels": "Failed to get channels",
+    "browser_not_support": "Your browser doesn't support WebRTC feature"
+
+  }
+}
