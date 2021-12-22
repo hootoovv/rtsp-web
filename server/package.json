@@ -1,0 +1,31 @@
+{
+  "name": "media-streamer",
+  "version": "1.0.0",
+  "description": "HLS streaming server for dynamic RTSP source",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "pkg -o media-streamer.exe -t node14-win-x64 index.js"
+  },
+  "keywords": [
+    "HLS",
+    "RTSP",
+    "WebRTC"
+  ],
+  "author": "Kevin Wu <exlearn@163.com>",
+  "license": "ISC",
+  "dependencies": {
+    "boom": "^7.3.0",
+    "fs": "0.0.1-security",
+    "js-yaml": "^4.1.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa2-cors": "^2.0.6",
+    "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "pkg": "^5.4.1"
+  }
+}
