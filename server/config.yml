@@ -22,7 +22,7 @@
     consumerTimeout: 5
 
     # CORS accept, default should not provide this parameter
-    cors: "*"
+    # cors: "*"
 
     # Trace all API access
     trace: true
