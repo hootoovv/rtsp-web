@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="视频播放器"
-    v-model="show"
+    v-model="showPlayer"
     fullscreen
     :before-close="onCloseVideoPlay"
     @opened="createPlayer"
@@ -39,19 +39,18 @@ export default {
   },
   data() {
     return {
+      showPlayer: this.show,
       player: null,
       retry: 0
     };
   },
-  // mounted() {
-  //   console.log("video player mounted.");
-  // },
-  // beforeUnmount() {
-  //   console.log("video player unmounted.");
-  // },
+  watch: {
+    show(s) {
+      this.showPlayer = s;
+    }
+  },
   methods: {
     createPlayer() {
-      // console.log('Create Player');
       let playerNew = document.createElement('div');
 
       let width = window.innerWidth - 40;
@@ -68,22 +67,17 @@ export default {
 
       videoJS.addLanguage("zh-CN", video_zhCN); //设置播放器的语言
 
-      // console.log(this.url);
       this.player = videoJS('video');
       this.retry = 0;
-      // this.player.src({src: this.url, type: 'application/x-mpegURL'});
-      // this.player.load(this.url);
 
       this.player.ready(() => {
         this.player.play();
 
         this.player.tech().on('retryplaylist', () => {
           this.retry++;
-          // console.log(`retry: ${this.retry}.`);
 
           if (this.retry >= 2) {
             this.destroyPlayer();
-            // console.log("player emit error");
             this.$emit('error');
           }
         });
@@ -93,11 +87,9 @@ export default {
       if (this.player) {
         this.player.dispose();
       }
-      // console.log('Player released.');
     },
     onCloseVideoPlay(done) {
       this.destroyPlayer();
-      // console.log("player emit close");
       this.$emit('close');
       done();
     }

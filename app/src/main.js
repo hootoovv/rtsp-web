@@ -5,8 +5,9 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import 'dayjs/locale/zh-cn'
-import locale from 'element-plus/lib/locale/lang/zh-cn'
+// import 'dayjs/locale/zh-cn'
+// import locale from 'element-plus/lib/locale/lang/zh-cn'
+import i18n from './i18n'
 
 function getBaseUrl() {
   let url = window.location.href;
@@ -19,28 +20,33 @@ function getBaseUrl() {
   return url;
 }
 
-const app = createApp(App);
+function start() {
+  const app = createApp(App);
 
-app.config.globalProperties.getBaseUrl = getBaseUrl;
+  app.config.globalProperties.getBaseUrl = getBaseUrl;
 
-app.use(router);
+  app.use(router);
 
-app.use(VueAxios, axios);
-axios.defaults.baseURL = getBaseUrl();
-axios.defaults.timeout = 10000;
+  app.use(VueAxios, axios);
+  axios.defaults.baseURL = getBaseUrl();
+  axios.defaults.timeout = 10000;
 
-axios.interceptors.response.use(response => {
-  const res = response.data;
-  if (res.code !== 200) {
-    return Promise.reject(new Error(res.message || 'Error'));
-  } else {
-    return res;
-  }
-}, err => {
-  return Promise.reject(new Error(err.response.data.error || err.message));
-});
+  axios.interceptors.response.use(response => {
+    const res = response.data;
+    if (res.code !== 200) {
+      return Promise.reject(new Error(res.message || 'Error'));
+    } else {
+      return res;
+    }
+  }, err => {
+    return Promise.reject(new Error(err.response.data.error || err.message));
+  });
 
-app.use(ElementPlus, { locale });
+  app.use(ElementPlus, { /*locale*/ });
 
-app.mount('#app')
+  app.use(i18n);
 
+  app.mount('#app')
+}
+
+start();
