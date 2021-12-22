@@ -17,8 +17,8 @@ const Mediasoup = require('mediasoup');
 
 const Config = require('./config');
 
-// const staticPath = '/static';
-const staticPath = '/';
+const staticPath = '/static';
+// const staticPath = '/';
 const hlsFolder = '/hls'
 
 let channelsMap = new Map();
@@ -57,7 +57,7 @@ async function startWebServer() {
   app.use(async (ctx, next) => {
     if (ctx.secure) {
       if (settings.trace) {
-        console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+        console.log(`Process ${ctx.request.method} ${ctx.request.url}`);
         await next();
       }
     }
@@ -217,21 +217,23 @@ function loadConfig(file) {
 }
 
 async function prepareHlsFolder() {
+  // make sure the settings.hlsPath to be an absolute path
   if (settings.hlsPath) {
-    if (settings.hlsPath.slice(-1) === '/' || settings.hlsPath.slice(-1) === '\\') {
-      settings.hlsPath = settings.hlsPath.slice(0, -1);
-    }      
+    if (!Path.isAbsolute(settings.hlsPath)) {
+      settings.hlsPath = Path.join(process.cwd(), settings.hlsPath);
+    }
   }
-  else {
-    settings.hlsPath = process.cwd() + staticPath;
+  else{
+    settings.hlsPath = Path.join(process.cwd(), staticPath);
   }
 
+  const hlsRoot = Path.join(settings.hlsPath, hlsFolder);
   try {
-    await Fs.promises.rmdir(settings.hlsPath + hlsFolder, { recursive: true });
-    await Fs.promises.mkdir(settings.hlsPath + hlsFolder, { recursive: true });
+    await Fs.promises.rmdir(hlsRoot, { recursive: true });
+    await Fs.promises.mkdir(hlsRoot, { recursive: true });
   }
   catch (e) {
-    console.error(`Failed to clean or create HLS cache folder: ${settings.hlsPath}${hlsFolder}. Exit.`);
+    console.error(`Failed to clean or create HLS cache folder: ${hlsRoot}. Exit.`);
     process.exit(100);
   }
 }
@@ -312,7 +314,7 @@ async function doChannelCreate(url) {
   let id = UUID.v4();
   let ch = {"id": id, "url": url};
 
-  let path = settings.hlsPath + hlsFolder + "/" + id;
+  const path = Path.join(settings.hlsPath, hlsFolder, id);
 
   await Fs.promises.mkdir(path, { recursive: true });
 
@@ -377,7 +379,7 @@ function doChannelStop(id) {
 async function doChannelDelete(id, killProcess = false) {
   let ch = channelsMap.get(id);
 
-  let path = settings.hlsPath + hlsFolder + '/' + ch.id;
+  const path = Path.join(settings.hlsPath, hlsFolder, id);
 
   await Fs.promises.rmdir(path, { force: true, recursive: true });
 
@@ -400,7 +402,7 @@ async function checkChannels() {
 
     // find m3u8 file and set the channel status from start to ready, means client side can start watching the channel
     if (ch.state === 'start') {
-      let path = settings.hlsPath + hlsFolder + '/' + ch.id + "/" + 'index.m3u8';
+      const path = Path.join(settings.hlsPath, hlsFolder, ch.id, 'index.m3u8');
 
       try {
         await Fs.promises.access(path);

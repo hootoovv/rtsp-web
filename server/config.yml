@@ -4,12 +4,13 @@
     apiUrl: /api
 
     # ffmpeg binary path
-    ffmpegPath: /usr/bin/ffmpeg
+    ffmpegPath: d:/tools/ffmpeg.exe
 
-    # server side basepath for hls channels, must be full path format without tailing '/'
+    # server side basepath for hls channels
     # this folder will provide full web access, so be careful. better leave it empty
     # if not present, will create a sub folder under exe.cwd()/static
-    # hlsPath: d:/temp
+    # hlsPath: ./temp
+
 
     # interval for cleaning up dead channels, unit in seconds
     checkInterval: 1

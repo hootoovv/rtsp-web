@@ -60,7 +60,7 @@ export default {
         window.localStorage.setItem('debug', 'mediasoup-client:*');
       }
 
-      console.log('createPlayer');
+      // console.log('createPlayer');
 
       const routerRtpCapabilities = await this.getRtpCapabilities();
 

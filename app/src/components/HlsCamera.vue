@@ -108,7 +108,10 @@ export default {
           }
         })
         .catch(() => {
-          // this.$message.error('获取频道状态出错。');
+          this.ready = false;
+          this.hlsUrl = "";
+          this.loading = false;
+          this.$message.error(this.$t('error.channel_closed'));
         });
     },
     stopChannel() {
