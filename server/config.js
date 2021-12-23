@@ -2,10 +2,13 @@ const config = {
   listenPort: '8080',
   listenSslPort: '8443',
   apiUrl: '/api',
-  ffmpegPath: 'd:/tools/ffmpeg.exe',
+  ffmpegPath: './tools/ffmpeg.exe',
+  workerPath: './tools/mediasoup-worker.exe',
+  hlsPath: './cache',
   checkInterval: 2, // interval for cleaning up dead channels, unit in seconds
   channelTimeout: 60, // unit in seconds
   consumerTimeout: 5, // room consumer idle timeout, unit in seconds
+  cors: '',
   trace: false,
   hls: {
     ffmpegParams1: ['-fflags', '+genpts'],

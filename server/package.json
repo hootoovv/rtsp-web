@@ -1,11 +1,12 @@
 {
-  "name": "media-streamer",
+  "name": "rtsp-web",
   "version": "1.0.0",
-  "description": "HLS streaming server for dynamic RTSP source",
+  "description": "HLS and WebRTC streaming server for dynamic RTSP source",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "pkg -o media-streamer.exe -t node14-win-x64 index.js"
+    "dev": "cross-env NODE_ENV=development node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "build": "pkg package.json"
   },
   "keywords": [
     "HLS",
@@ -23,10 +24,20 @@
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
-    "mediasoup": "^3.9.2",
+    "mediasoup": "file:mediasoup-win",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "pkg": "^5.4.1"
+  },
+  "bin": "index.js",
+  "pkg": {
+    "assets": [
+      "static/**/*"
+    ],
+    "targets": [
+      "node14-win-x64"
+    ]
   }
 }

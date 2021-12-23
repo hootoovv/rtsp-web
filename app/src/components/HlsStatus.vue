@@ -13,7 +13,7 @@
       <el-table-column prop="startTime" :label="$t('message.table.start_time')" sortable width="240"></el-table-column>
       <el-table-column prop="id" :label="$t('message.table.id')" sortable></el-table-column>
       <el-table-column prop="url" :label="$t('message.table.rtsp')" sortable></el-table-column>
-      <el-table-column prop="hls" :label="$t('message.table.hls')" width="120" align="center">
+      <el-table-column prop="hls" :label="$t('message.table.watch')" width="120" align="center">
         <template #default="scope">
           <template v-if="scope.row.state === 'ready'">
             <el-button type="text" @click="playVideo(scope.row.id, scope.row.hls)">{{$t('message.button.watch')}}</el-button>

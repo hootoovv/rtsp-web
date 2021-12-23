@@ -20,7 +20,7 @@
       "start_time": "Start Time",
       "id": "Channel",
       "rtsp": "RTSP Address",
-      "hls": "HLS Address"
+      "watch": "Watch"
     },
     "player": {
       "hls": "Stream Video Player",

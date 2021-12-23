@@ -18,9 +18,9 @@ const Mediasoup = require('mediasoup');
 const Config = require('./config');
 
 const staticPath = '/static';
-// const staticPath = '/';
-const hlsFolder = '/hls'
+const hlsFolder = '/hls';
 
+let rootPath;
 let channelsMap = new Map();
 let roomsMap = new Map();
 let settings;
@@ -37,10 +37,18 @@ let mediasoupRouter;
 })();
 
 async function startWebServer() {
-  let yml = loadConfig(Path.join(process.cwd(), './config.yml'));
-  settings = Object.assign(Config, yml);
+  rootPath = Path.dirname(process.execPath);
 
-  await prepareHlsFolder();
+  if (process.env.NODE_ENV === "development" || process.execPath.slice(-8) === "node.exe") {
+    rootPath = process.cwd();
+  }
+  
+  let yml = loadConfig(Path.join(rootPath, 'config.yml'));
+  settings = Object.assign({}, Config);
+
+  copyValue(yml, settings);
+
+  await prepareFolder();
 
   const app = new Koa();
 
@@ -60,6 +68,7 @@ async function startWebServer() {
         console.log(`Process ${ctx.request.method} ${ctx.request.url}`);
         await next();
       }
+      await next();
     }
     else {
       // force to access via https
@@ -71,10 +80,8 @@ async function startWebServer() {
   // parse request body:
   app.use(BodyParser());
 
-  app.use(StaticServer(process.cwd() + staticPath));
-  if (settings.hls.hlsPath) {
-    app.use(StaticServer(settings.hls.hlsPath));
-  }
+  app.use(StaticServer(Path.join(__dirname, staticPath)));
+  app.use(StaticServer(settings.hlsPath));
 
   let router = new Router({
     prefix: settings.apiUrl
@@ -118,14 +125,14 @@ async function startWebServer() {
   let key, cert;
 
   if (!Path.isAbsolute(settings.tls.sslKey)) {
-    key = Path.join(process.cwd(), settings.tls.sslKey);
+    key = Path.join(rootPath, settings.tls.sslKey);
   }
   else {
     key = settings.tls.sslKey;
   }
 
   if (!Path.isAbsolute(settings.tls.sslCrt)) {
-    cert = Path.join(process.cwd(), settings.tls.sslCrt);
+    cert = Path.join(rootPath, settings.tls.sslCrt);
   }
   else {
     cert = settings.tls.sslCrt;
@@ -164,6 +171,7 @@ async function startWebServer() {
 
 async function startMediasoupWorker() {
   worker = await Mediasoup.createWorker({
+    workerPath: settings.workerPath,
     logLevel: settings.rtc.worker.logLevel,
     logTags: settings.rtc.worker.logTags,
     rtcMinPort: settings.rtc.worker.rtcMinPort,
@@ -211,20 +219,45 @@ function loadConfig(file) {
     }
     return doc;
   } catch (e) {
+    console.log('Failed to load config.yml, will use default configuration');
     console.log(e);
     return {};
   }
 }
 
-async function prepareHlsFolder() {
+function copyValue(src, dist) {
+  if (!src || typeof(src) !== 'object' || typeof(dist) !== 'object'){
+    return ; 
+  } 
+  
+  let keys = Object.keys(dist);
+  
+  if (keys && keys.length > 0 && isNaN(keys[0]))
+  {
+    keys.forEach(key => {
+      let value = dist[key];
+      let srcVal = src[key];
+      // 判断是不是对象，如果是则继续遍历，不是则开始赋值或忽略
+      if (value !== undefined && typeof(value) === 'object' && srcVal && typeof(srcVal) === 'object' && srcVal[0] === undefined) {
+        copyValue(srcVal, value);
+      } 
+      else if (value !== undefined && srcVal && typeof(value) == typeof (srcVal)) {
+        // 如果源数据存在，并且类型一致，则开始赋值
+        dist[key] = src[key];
+      }
+    });
+  }
+}
+
+async function prepareFolder() {
   // make sure the settings.hlsPath to be an absolute path
   if (settings.hlsPath) {
     if (!Path.isAbsolute(settings.hlsPath)) {
-      settings.hlsPath = Path.join(process.cwd(), settings.hlsPath);
+      settings.hlsPath = Path.join(rootPath, settings.hlsPath);
     }
   }
   else{
-    settings.hlsPath = Path.join(process.cwd(), staticPath);
+    settings.hlsPath = rootPath;
   }
 
   const hlsRoot = Path.join(settings.hlsPath, hlsFolder);
@@ -236,6 +269,17 @@ async function prepareHlsFolder() {
     console.error(`Failed to clean or create HLS cache folder: ${hlsRoot}. Exit.`);
     process.exit(100);
   }
+
+  if (!Path.isAbsolute(settings.ffmpegPath)) {
+    settings.ffmpegPath = Path.join(rootPath, settings.ffmpegPath);
+  }
+
+  if (!Path.isAbsolute(settings.workerPath)) {
+    settings.workerPath = Path.join(rootPath, settings.workerPath);
+  }
+
+  console.log(settings.workerPath);
+  process.env.MEDIASOUP_WORKER_BIN = settings.workerPath;
 }
 
 // HLS Restful API

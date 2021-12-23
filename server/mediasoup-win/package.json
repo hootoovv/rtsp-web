@@ -1,0 +1,74 @@
+{
+  "name": "mediasoup",
+  "version": "3.9.2",
+  "description": "Cutting Edge WebRTC Video Conferencing",
+  "contributors": [
+    "Iñaki Baz Castillo <ibc@aliax.net> (https://inakibaz.me)",
+    "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
+    "Nazar Mokynskyi (https://github.com/nazar-pc)"
+  ],
+  "homepage": "https://mediasoup.org",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/versatica/mediasoup.git"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/mediasoup"
+  },
+  "main": "node/lib/index.js",
+  "types": "node/lib/index.d.ts",
+  "files": [
+    "node/lib",
+    "npm-scripts.js"
+  ],
+  "keywords": [
+    "webrtc",
+    "ortc",
+    "sfu",
+    "nodejs"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "typescript:build": "node npm-scripts.js typescript:build",
+    "typescript:watch": "node npm-scripts.js typescript:watch",
+    "lint": "npm run lint:node && npm run lint:worker",
+    "lint:node": "node npm-scripts.js lint:node",
+    "test": "npm run test:node",
+    "test:node": "node npm-scripts.js test:node",
+    "coverage": "node npm-scripts.js coverage",
+    "release": "node npm-scripts.js release"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "testRegex": "node/tests/test.*\\.js"
+  },
+  "dependencies": {
+    "@types/node": "^16.11.10",
+    "debug": "^4.3.2",
+    "h264-profile-level-id": "^1.0.1",
+    "random-number": "^0.0.9",
+    "supports-color": "^9.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/random-number": "^0.0.1",
+    "@types/uuid": "^8.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
+    "eslint-plugin-jest": "^25.3.0",
+    "jest": "^27.3.1",
+    "jest-tobetype": "^1.2.3",
+    "open-cli": "^7.0.1",
+    "pick-port": "^1.0.0",
+    "sctp": "^1.0.0",
+    "tsc-watch": "^4.5.0",
+    "typescript": "^4.5.2"
+  }
+}

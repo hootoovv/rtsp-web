@@ -20,7 +20,7 @@
       "start_time": "启动时间",
       "id": "频道",
       "rtsp": "RTSP地址",
-      "hls": "HLS地址"
+      "watch": "监看地址"
     },
     "player": {
       "hls": "流视频播放器",
