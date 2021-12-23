@@ -66,7 +66,6 @@ async function startWebServer() {
     if (ctx.secure) {
       if (settings.trace) {
         console.log(`Process ${ctx.request.method} ${ctx.request.url}`);
-        await next();
       }
       await next();
     }
@@ -278,7 +277,6 @@ async function prepareFolder() {
     settings.workerPath = Path.join(rootPath, settings.workerPath);
   }
 
-  console.log(settings.workerPath);
   process.env.MEDIASOUP_WORKER_BIN = settings.workerPath;
 }
 
