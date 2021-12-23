@@ -37,17 +37,22 @@ For linux like env, remove the mediasoup from package.json and add it normally (
 
 ```shell
 cd app
-yarn
-yarn build
-cd ..
-cd server
-# following 2 lines is for linux to use official mediasoup, you need change server/index.js Mediasoup.createWorker() call.
-# npm uinstall mediasoup
-# npm install -S mediasoup
 mkdir certs
 cd certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout privkey.pem -out fullchain.pem
 cd ..
+yarn
+yarn build
+cd ..
+cd server
+mkdir certs
+cd certs
+copy ..\app\certs\*.* certs\
+mkdir static
+xcopy /S ..\app\dist\*.* static\
+# following 2 lines is for linux to use official mediasoup, you need change server/index.js Mediasoup.createWorker() call.
+# npm uinstall mediasoup
+# npm install -S mediasoup
 npm i
 npm run build
 ```
@@ -71,7 +76,8 @@ set PYTHON=your_python_exe_path
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 ```
 
-You are ready to go: 
+You are ready to go:
+
 ```shell
 npm i
 ```
