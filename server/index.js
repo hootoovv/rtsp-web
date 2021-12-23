@@ -261,7 +261,9 @@ async function prepareFolder() {
 
   const hlsRoot = Path.join(settings.hlsPath, hlsFolder);
   try {
-    await Fs.promises.rmdir(hlsRoot, { recursive: true });
+    if (Fs.existsSync(hlsRoot)) {
+      await Fs.promises.rmdir(hlsRoot, { recursive: true });
+    }
     await Fs.promises.mkdir(hlsRoot, { recursive: true });
   }
   catch (e) {
